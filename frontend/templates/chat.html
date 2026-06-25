@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBus — AI Travel Assistant</title>
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+</head>
+<body>
+
+    <!-- Screen 1: phone entry -->
+    <div id="entry-screen" class="screen">
+        <div class="entry-card">
+            <h1>SmartBus</h1>
+            <p class="tagline">Your AI travel assistant for bus travel in Rwanda</p>
+            <label for="phone-input">Phone number</label>
+            <input
+                type="tel"
+                id="phone-input"
+                placeholder="e.g. 0788123456"
+                autocomplete="tel"
+            >
+            <button id="start-button">Start chatting</button>
+            <p id="entry-error" class="error-text"></p>
+        </div>
+    </div>
+
+    <!-- Screen 2: chat -->
+    <div id="chat-screen" class="screen hidden">
+        <header class="chat-header">
+            <span class="brand">SmartBus</span>
+            <span id="traveler-id-display" class="traveler-id"></span>
+        </header>
+
+        <div id="message-list" class="message-list"></div>
+
+        <div id="typing-indicator" class="typing-indicator hidden">
+            SmartBus is typing<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+            <input
+                type="text"
+                id="message-input"
+                placeholder="Type a message…"
+                autocomplete="off"
+                autofocus
+            >
+            <button type="submit" id="send-button">Send</button>
+        </form>
+    </div>
+
+    <!--
+        Seat map widget template.
+        Cloned by chat.js renderSeatMap() — never shown directly.
+        The JS fills in trip-specific IDs and appends the seat grid rows.
+    -->
+    <template id="tmpl-seat-map">
+        <div class="seat-map-widget">
+            <div class="smw-header">
+                <span class="smw-title">Choose your seat</span>
+                <span class="smw-legend">
+                    <span><span class="smw-dot available"></span>Free</span>
+                    <span><span class="smw-dot taken"></span>Taken</span>
+                    <span><span class="smw-dot selected"></span>Yours</span>
+                </span>
+            </div>
+
+            <div class="smw-windscreen">▲ FRONT</div>
+
+            <!-- JS appends .smw-row elements here -->
+            <div class="smw-grid" data-ref="grid"></div>
+
+            <div class="smw-confirm-row">
+                <span class="smw-selection-label" data-ref="label">
+                    Tap a green seat to pick it.
+                </span>
+                <button class="smw-confirm-btn" data-ref="confirm" disabled>
+                    Book seat
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!--
+        Single seat button template.
+        Cloned once per seat; JS sets class, textContent, disabled, and title.
+    -->
+    <template id="tmpl-seat-btn">
+        <button class="seat-btn" type="button"></button>
+    </template>
+
+    <!--
+        Seat row template.
+        Structure: [row-num] [A] [B] [aisle] [C] [D]
+        JS clones this, stamps the row number, then replaces the four
+        data-seat slots with cloned seat buttons (or empty divs for padding).
+    -->
+    <template id="tmpl-seat-row">
+        <div class="smw-row">
+            <span class="smw-row-num" data-ref="rowNum"></span>
+            <div data-seat="A"></div>
+            <div data-seat="B"></div>
+            <div class="smw-aisle"></div>
+            <div data-seat="C"></div>
+            <div data-seat="D"></div>
+        </div>
+    </template>
+
+    <script src="{% static 'js/chat.js' %}"></script>
+</body>
+</html>
